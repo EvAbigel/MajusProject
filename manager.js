@@ -1,7 +1,8 @@
 class Manager{
     #array
     #addCallback;
-    #counter;
+    #renderCallback
+
     #kiadas;
     #bevetel;
 
@@ -22,29 +23,34 @@ class Manager{
     }
 
     get counter(){
-        return this.#counter;
-    }
-
-    set counter(value){
-        this.#counter = value;
+        return this.#array.length;
     }
 
 
     constructor() {
         this.#array = [];
         this.#addCallback = ()=>{};
+        this.#renderCallback = () => {};
+
         this.#kiadas = 0;
         this.bevetel = 0;
-        this.counter = 0;
     }
 
     setAddCallBack(callBack){
         this.#addCallback = callBack;
     }
 
+    setRenderCallBack(callBack){
+        this.#renderCallback = callBack;
+    }
+
     add(termek){
         this.#array.push(termek);
         this.#addCallback(termek);
+    }
+
+    render(array){
+        this.#renderCallback(array);
     }
 
     generateTextForExport(){
@@ -55,5 +61,15 @@ class Manager{
             result.push(line);
         }
         return result.join("\n");
+    }
+
+    sortBy(value, order){
+        console.log("sort");
+
+
+    }
+
+    filterBy(name, month, number){
+        console.log("filter");
     }
 }

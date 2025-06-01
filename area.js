@@ -56,8 +56,6 @@ class TableArea extends Area{
                 manager.bevetel = plusz(Number(manager.bevetel), Number(termek.ar));
             }
 
-            manager.counter++;
-
         });
     }
 
@@ -72,5 +70,109 @@ class TableArea extends Area{
 
         const tbody = createHTMLElement("tbody", table);
         return tbody;
+    }
+}
+
+class FormArea extends Area{
+    #errorDiv
+
+    #monthSelect;
+    #selectList;
+    #orderList;
+
+    #nameInput
+    #numInput
+
+    constructor(className, manager){
+        super(className,manager);
+
+        createHTMLElement("label", this.div).innerText = "Megnevezés:";
+        this.#nameInput = createHTMLElement("input", this.div)
+        this.#nameInput.type = "text";
+        createHTMLElement("br", this.div);
+
+        createHTMLElement("label", this.div).innerText = "Hónap:";
+        this.#monthSelect = createHTMLElement("select", this.div);
+        createHTMLElement("br", this.div);
+
+        createHTMLElement("label", this.div).innerText = "Összeg:";
+        this.#numInput = createHTMLElement("input", this.div)
+        this.#numInput.type = "number";
+        createHTMLElement("br", this.div);
+
+        this.#selectList = createHTMLElement("select", this.div);
+        this.#orderList = createHTMLElement("select", this.div);
+
+        this.#fillSelects(["", "jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "szep", "okt", "nov", "dec"],
+                          ["","Megnevezés", "Hely", "Hónap", "Összeg"]);
+
+        this.#errorDiv = createHTMLElement("div", this.div);
+        this.#errorDiv.classList.add("errorDiv");
+    }
+
+    #fillSelects(monthelect, listSelect){
+        for (const items of monthelect){
+            const option = createHTMLElement("option", this.#monthSelect);
+            option.value = items;
+            option.innerHTML = items;
+        }
+
+        for (const items of ["","Növekvő", "Csökkenő"]){
+            const option = createHTMLElement("option", this.#orderList);
+            option.value = items;
+            option.innerHTML = items;
+        }
+
+        for (const items of listSelect){
+            const option = createHTMLElement("option", this.#selectList);
+            option.value = items;
+            option.innerHTML = items;
+        }
+    }
+
+    validateFields(){
+        this.#errorDiv.innerHTML = "";
+
+        if(this.#validateFilter() && this.#validateSort()){
+            this.#filterBy();
+            this.#sortBy();
+        }
+        else if (this.#validateFilter()){
+            this.#filterBy();
+        }
+        else if (this.#validateSort()){
+            this.#sortBy();
+        }
+        else{
+            
+            this.#errorDiv.innerHTML = "Töltsd ki valamelyik 2 v. 3 mezőt!";
+            
+        }
+    }
+
+    #validateSort(){
+        if(this.#nameInput != "" && this.#monthSelect.value != "" && this.#numInput !=""){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    #validateFilter(){
+        if (this.#selectList.value != "" && this.#monthSelect != ""){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    #sortBy(){
+        this.manager.sortBy(this.#selectList, this.#orderList);
+    }
+
+    #filterBy(){
+        this.manager.filterBy(this.#nameInput.value, this.#monthSelect.value, this.#numInput.value);
     }
 }

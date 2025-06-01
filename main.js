@@ -1,3 +1,17 @@
+const manager = new Manager();
+const formArea = new FormArea("formArea", manager);
+const button = createCell("button", "Rendezz/Szűrj/Számíts!", formArea.div);
+button.addEventListener('click', (e)=>{
+    answerDiv.innerHTML = "";
+    addSentence(`Az összes kiadás: ${manager.kiadas}.`, answerDiv);
+    addSentence(`Az összes bevétel: ${manager.bevetel}.`, answerDiv);
+    addSentence(`Az elemek száma: ${manager.counter}.`, answerDiv);
+
+    formArea.validateFields();
+});
+
+createHTMLElement("br", document.body);
+
 fileUploader(fileResult =>{
     const fileLines = fileResult.split("\n");
     const dataLines = fileLines.slice(1);
@@ -8,18 +22,9 @@ fileUploader(fileResult =>{
         const termek = new Termek(fields[0],fields[1],fields[2],fields[3]);
         manager.add(termek);
     }
-})
-
-const manager = new Manager();
-const tableArea = new TableArea("tableArea", manager);
-
-const answerDiv = createHTMLElement("div", document.body);
-
-const button = createCell("button", "Számít", document.body);
-button.addEventListener('click', (e)=>{
-    answerDiv.innerHTML = "";
-    addSentence(`Az összes kiadás: ${manager.kiadas}.`, answerDiv);
-    addSentence(`Az összes bevétel: ${manager.bevetel}.`, answerDiv);
-    addSentence(`Az elemek száma: ${manager.bevetel}.`, answerDiv);
 });
 
+
+
+const tableArea = new TableArea("tableArea", manager);
+const answerDiv = createHTMLElement("div", document.body);
