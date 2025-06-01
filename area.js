@@ -150,8 +150,8 @@ class FormArea extends Area{
         }
     }
 
-    #validateSort(){
-        if(this.#nameInput != "" && this.#monthSelect.value != "" && this.#numInput !=""){
+    #validateFilter(){
+        if (this.#nameInput.value != "" && this.#monthSelect.value != "" && this.#numInput.value){
             return true;
         }
         else{
@@ -159,14 +159,16 @@ class FormArea extends Area{
         }
     }
 
-    #validateFilter(){
-        if (this.#selectList.value != "" && this.#monthSelect != ""){
+    #validateSort(){
+        if(this.#selectList.value != "" && this.#orderList.value != ""){
             return true;
         }
         else{
             return false;
         }
     }
+
+    
 
     #sortBy(){
         this.manager.sortBy(this.#selectList, this.#orderList);
