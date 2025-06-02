@@ -55,7 +55,34 @@ class TableArea extends Area{
                 arTd.classList.add("pozitív");
                 manager.bevetel = plusz(Number(manager.bevetel), Number(termek.ar));
             }
+            manager.counter++;
+        });
 
+        manager.setRenderCallBack((array)=>{
+            this.#tbody.innerHTML = "";
+            manager.kiadas = 0;
+            manager.bevetel = 0;
+            manager.counter = 0;
+
+            for (const items of array){
+                const trow = createHTMLElement("tr", this.#tbody);
+
+                createCell("td", items.tipus, trow);
+                createCell("td", items.boltNev, trow);
+                createCell("td", items.honap, trow);
+                const arTd = createCell("td", items.ar, trow);
+
+                if (items.ar < 0){
+                arTd.classList.add("negativ");
+                manager.kiadas = plusz(Number(manager.kiadas), Number(items.ar));
+                }
+                else{
+                    arTd.classList.add("pozitív");
+                    manager.bevetel = plusz(Number(manager.bevetel), Number(items.ar));
+                }
+
+                manager.counter++;
+            }
         });
     }
 
@@ -134,8 +161,8 @@ class FormArea extends Area{
         this.#errorDiv.innerHTML = "";
 
         if(this.#validateFilter() && this.#validateSort()){
-            this.#filterBy();
             this.#sortBy();
+            this.#filterBy();
         }
         else if (this.#validateFilter()){
             this.#filterBy();
@@ -170,11 +197,60 @@ class FormArea extends Area{
 
     
 
-    #sortBy(){
-        this.manager.sortBy(this.#selectList, this.#orderList);
-    }
+    #sortBy() {
+    const selectVal = this.#selectList.value;
+    const orderVal = this.#orderList.value;
 
-    #filterBy(){
-        this.manager.filterBy(this.#nameInput.value, this.#monthSelect.value, this.#numInput.value);
-    }
+    this.manager.sortBy((array) => {
+        const sorted = array.slice();
+
+        sorted.sort((a, b) => {
+            let aVal, bVal;
+
+            if (selectVal === "Megnevezés") {
+                aVal = a.tipus;
+                bVal = b.tipus;
+            } else if (selectVal === "Hely") {
+                aVal = a.boltNev;
+                bVal = b.boltNev;
+            } else if (selectVal === "Hónap") {
+                aVal = a.honap;
+                bVal = b.honap;
+            } else if (selectVal === "Összeg") {
+                aVal = Number(a.ar);
+                bVal = Number(b.ar);
+            }
+
+            if (typeof aVal === "string") {
+                return orderVal === "Növekvő"
+                    ? aVal.localeCompare(bVal)
+                    : bVal.localeCompare(aVal);
+            } else {
+                return orderVal === "Növekvő"
+                    ? aVal - bVal
+                    : bVal - aVal;
+            }
+        });
+
+        return sorted;
+    });
+}
+
+
+    #filterBy() {
+    const name = this.#nameInput.value;
+    const honap = this.#monthSelect.value;
+    const ar = Number(this.#numInput.value);
+
+    this.manager.filterBy((array) => {
+        return array.filter(item => {
+            return (
+                item.tipus === name &&
+                item.honap === honap &&
+                Number(item.ar) === ar
+            );
+        });
+    });
+}
+
 }

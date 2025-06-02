@@ -3,11 +3,13 @@ const formArea = new FormArea("formArea", manager);
 const button = createCell("button", "Rendezz/Szűrj/Számíts!", formArea.div);
 button.addEventListener('click', (e)=>{
     answerDiv.innerHTML = "";
+    formArea.validateFields();
+
     addSentence(`Az összes kiadás: ${manager.kiadas}.`, answerDiv);
     addSentence(`Az összes bevétel: ${manager.bevetel}.`, answerDiv);
     addSentence(`Az elemek száma: ${manager.counter}.`, answerDiv);
 
-    formArea.validateFields();
+    
 });
 
 createHTMLElement("br", document.body);
